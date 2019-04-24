@@ -1,5 +1,6 @@
 import tkinter as tk
 import time
+from threading import Timer
 # from win32api import GetSystemMetrics
 # screen_width = GetSystemMetrics(0)
 # screen_height = GetSystemMetrics(1)
@@ -14,12 +15,8 @@ class App(tk.Frame):
         self.root.title("managing prog.")
         self.root.geometry("800x600")
         self.pack()
-
+        self.bind_id_enter = None
         logInPage(self.root)
-        #testPage(self.root)
-        #self.test()
-
-
 
 class logInPage(tk.Frame):
     def __init__(self, master):
@@ -27,7 +24,8 @@ class logInPage(tk.Frame):
         self.master = master
         self.pack()
         self.draw()
-        print("log inited")
+        self.read_input()
+
     def draw(self):
         #####top#################
         self.t1 = tk.Label(self)
@@ -47,29 +45,87 @@ class logInPage(tk.Frame):
         self.t4.config(text="查詢預約書請刷卡！", width=20, height=10, font=20)
         self.t4.pack()
         #######body end###########
-        # x = input()
-        # if x:
-        #     self.destroy()
-        #     testPage(self.master)
-        #testPage(self.master)
-        
-class testPage(tk.Frame):
+
+    def switch(self, x):
+        print("switching to showColorPage")
+        self.destroy()
+        self.master.unbind("<Return>", self.bind_id_enter)
+        showColorPage(self.master)
+
+    def read_input(self):
+        self.bind_id_enter = root.bind("<Return>", self.switch)
+
+
+
+class showColorPage(tk.Frame):
     def __init__(self, master):
         tk.Frame.__init__(self, master)
         self.master = master
         self.pack()
         self.draw()
+        self.switch()
+    
     def draw(self):
         self.t1 = tk.Label(self)
         self.t2 = tk.Label(self)
-        self.t1.config(text="hahaha", width=100, height=2)
+        self.t1.config(text="this is show color page", width=100, height=2)
         self.t2.config(text="ha", bg="green", width=100, height=2)
         self.t1.pack()
         self.t2.pack()
 
+    def switch(self):
+        print("switching to detailPage")
+        self.destroy_countDown = Timer(5.0, self.destroy)
+        self.newPage_countDown = Timer(5.0, detailPage, [self.master])
+        self.destroy_countDown.start()
+        self.newPage_countDown.start()
+
+class detailPage(tk.Frame):
+    def __init__(self, master):
+        tk.Frame.__init__(self, master)
+        self.master = master
+        self.pack()
+        self.draw()
+        self.switch()
+    
+    def draw(self):
+        self.t1 = tk.Label(self)
+        self.t2 = tk.Label(self)
+        self.t1.config(text="this is detail page", width=100, height=2)
+        self.t2.config(text="ha", bg="green", width=100, height=2)
+        self.t1.pack()
+        self.t2.pack()
+
+    def switch(self):
+        print("switching to reminderPage")
+        self.destroy_countDown = Timer(5.0, self.destroy)
+        self.newPage_countDown = Timer(5.0, reminderPage, [self.master])
+        self.destroy_countDown.start()
+        self.newPage_countDown.start()
 
 
+class reminderPage(tk.Frame):
+    def __init__(self, master):
+        tk.Frame.__init__(self, master)
+        self.master = master
+        self.pack()
+        self.draw()
+        self.switch()
+    
+    def draw(self):
+        self.t1 = tk.Label(self)
+        self.t2 = tk.Label(self)
+        self.t1.config(text="this is reminder page", width=100, height=2)
+        self.t2.config(text="ha", bg="green", width=100, height=2)
+        self.t1.pack()
+        self.t2.pack()
 
+    def switch(self):
+        print("switching to logInPage")
+        self.destroy_countDown = Timer(5.0, self.destroy)
+        self.newPage_countDown = Timer(5.0, logInPage, [self.master])
+        self.destroy_countDown.start()
+        self.newPage_countDown.start()
 
 
 root = tk.Tk()
